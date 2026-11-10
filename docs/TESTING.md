@@ -42,7 +42,7 @@ This starts the real main scene, captures menu and character selection, plays a 
 The checked-in images live in `docs/media/`; `capture.json` records the engine, source frame rate, frame count, and final real round statistics. The GIF has 140 frames and is approximately 4.2 MB. For raw output without overwriting the checked-in images:
 
 ```sh
-xvfb-run -a godot --path . --rendering-method gl_compatibility \
+xvfb-run -a -s "-screen 0 1280x1280x24" godot --path . --rendering-method gl_compatibility \
   --audio-driver Dummy --fixed-fps 30 --script scripts/capture.gd \
   -- --output=/tmp/buraco-capture
 ```

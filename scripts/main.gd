@@ -3,8 +3,8 @@ extends Node
 const UI = preload("res://scripts/ui_kit.gd")
 const CANDIDATES := [
 	{"name": "VÂNIA DO VOUCHER", "short": "VÂNIA", "number": "40", "party": "MRJ", "art": "vania", "role": "A TECNOCRATA", "quote": "Privatiza o asfalto. Terceiriza a cratera.", "perk": "AGILIDADE", "detail": "Mais velocidade para alcançar a próxima promessa.", "color": Color("1d63b8")},
-	{"name": "WALDEMAR DA EMENDA", "short": "WALDEMAR", "number": "99", "party": "PBN", "art": "waldemar", "role": "O VETERANO", "quote": "Se cabe no orçamento, cabe no buraco!", "perk": "CRESCIMENTO", "detail": "Um apetite maior para transformar verba em cratera.", "color": Color("b66c19")},
-	{"name": "BRENO BICICLETINHA", "short": "BRENO", "number": "50", "party": "CCS", "art": "breno", "role": "O IDEALISTA", "quote": "Um buraco holístico, cicloviário e dialético.", "perk": "COMBO", "detail": "Mais tempo para emendar uma absorção na outra.", "color": Color("197c43")}
+	{"name": "WALDEMAR DA EMENDA", "short": "WALDEMAR", "number": "99", "party": "PBN", "art": "waldemar", "role": "O VETERANO", "quote": "Se cabe no orçamento, cabe no buraco!", "perk": "CRESCIMENTO", "detail": "Um apetite maior para transformar verba em cratera.", "color": Color("8c4d0b")},
+	{"name": "BRENO BICICLETINHA", "short": "BRENO", "number": "50", "party": "CCS", "art": "breno", "role": "O IDEALISTA", "quote": "Um buraco holístico, cicloviário e dialético.", "perk": "COMBO", "detail": "Mais tempo para emendar uma absorção na outra.", "color": Color("125b31")}
 ]
 const RANKS := ["PANFLETEIRO", "VEREADOR", "DEPUTADO", "MINISTRO", "BURACO SUPREMO"]
 var gameplay: Node2D
@@ -94,7 +94,7 @@ func _page(background: Color = UI.PAPER) -> VBoxContainer:
 	var column := VBoxContainer.new()
 	column.custom_minimum_size.x = 484
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	column.add_theme_constant_override("separation", 14)
+	column.add_theme_constant_override("separation", 12)
 	center.add_child(column)
 	page = column
 	var anim := create_tween()
@@ -144,7 +144,7 @@ func show_menu() -> void:
 	var strip := HBoxContainer.new()
 	strip.add_theme_constant_override("separation", 14)
 	column.add_child(strip)
-	strip.add_child(UI.portrait("res://assets/art/%s.png" % candidate.art, 58))
+	strip.add_child(UI.framed_portrait("res://assets/art/%s.png" % candidate.art, 58))
 	var details := VBoxContainer.new()
 	details.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	details.add_theme_constant_override("separation", 1)
@@ -209,7 +209,7 @@ func show_selection() -> void:
 		var name_label := UI.label(candidate.short, 26, UI.INK, true)
 		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		content.add_child(name_label)
-		var badge := UI.label("✓ ELEITO" if selected_candidate == i else candidate.perk, 13, UI.GREEN if selected_candidate == i else UI.MUTED)
+		var badge := UI.label("✓ ELEITO" if selected_candidate == i else candidate.perk, 13, Color("125b31") if selected_candidate == i else UI.MUTED)
 		badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		content.add_child(badge)
 	var selected: Dictionary = CANDIDATES[selected_candidate]
@@ -279,24 +279,43 @@ func _build_hud() -> void:
 	time_label = UI.label("01:30", 34, UI.INK, true)
 	timer_stack.add_child(time_label)
 	var pause := UI.button("Ⅱ", _act(show_pause))
-	pause.custom_minimum_size.x = 58
+	pause.custom_minimum_size = Vector2(60, 60)
+	pause.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	pause.size_flags_horizontal = Control.SIZE_SHRINK_END
 	row.add_child(pause)
+	var strip := PanelContainer.new()
+	strip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var strip_style := UI.style(UI.PAPER, UI.INK, 1, false)
+	strip_style.content_margin_left = 10
+	strip_style.content_margin_right = 10
+	strip_style.content_margin_top = 5
+	strip_style.content_margin_bottom = 5
+	strip.add_theme_stylebox_override("panel", strip_style)
+	stack.add_child(strip)
+	var strip_stack := VBoxContainer.new()
+	strip_stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	strip_stack.add_theme_constant_override("separation", 4)
+	strip.add_child(strip_stack)
 	var info := HBoxContainer.new()
 	info.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	stack.add_child(info)
+	strip_stack.add_child(info)
 	rank_label = UI.label("PANFLETEIRO", 21, UI.INK, true)
 	rank_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	info.add_child(rank_label)
 	combo_label = UI.label("", 20, UI.RED, true)
 	info.add_child(combo_label)
 	progress_bar = ProgressBar.new()
-	progress_bar.custom_minimum_size.y = 8
+	progress_bar.custom_minimum_size.y = 10
 	progress_bar.show_percentage = false
 	progress_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	progress_bar.add_theme_stylebox_override("background", UI.style(UI.PALE, UI.INK, 1, false))
-	progress_bar.add_theme_stylebox_override("fill", UI.style(UI.GREEN, UI.GREEN, 0, false))
-	stack.add_child(progress_bar)
+	for entry in [["background", UI.PALE], ["fill", UI.GREEN]]:
+		var bar_style := StyleBoxFlat.new()
+		bar_style.bg_color = entry[1]
+		bar_style.border_color = UI.INK
+		bar_style.set_border_width_all(2)
+		bar_style.set_content_margin_all(0)
+		progress_bar.add_theme_stylebox_override(entry[0], bar_style)
+	strip_stack.add_child(progress_bar)
 	hint_label = UI.label("ARRASTE PARA MOVER • COMECE PELOS PAPÉIS", 15, UI.INK)
 	hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	hint_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
@@ -343,8 +362,11 @@ func show_pause() -> void:
 	column.add_child(UI.label("%s PONTOS   •   %ds RESTANTES" % [_number(int(stats.get("score", 0))), int(ceil(float(stats.get("time_left", 0))))], 26, UI.INK, true))
 	column.add_child(UI.button("RETOMAR MANDATO   →", _act(resume_game), true))
 	column.add_child(UI.button("RECOMEÇAR ELEIÇÃO", _act(func(): start_game(selected_candidate))))
-	column.add_child(UI.button("VOLTAR À CAPA", _act(show_menu)))
-	column.add_child(UI.button("SOM: OFF" if muted else "SOM: ON", _toggle_audio))
+	var utilities := HBoxContainer.new()
+	utilities.add_theme_constant_override("separation", 12)
+	column.add_child(utilities)
+	utilities.add_child(UI.button("VOLTAR À CAPA", _act(show_menu)))
+	utilities.add_child(UI.button("SOM: OFF" if muted else "SOM: ON", _toggle_audio))
 	column.add_child(UI.body("O relógio fica parado durante a pausa.\nESC também retoma a sessão.", 17))
 
 func resume_game() -> void:
@@ -374,7 +396,7 @@ func show_results(stats: Dictionary) -> void:
 	column.add_child(UI.rule())
 	var total := HBoxContainer.new()
 	column.add_child(total)
-	total.add_child(UI.portrait("res://assets/art/%s.png" % CANDIDATES[selected_candidate].art, 118))
+	total.add_child(UI.framed_portrait("res://assets/art/%s.png" % CANDIDATES[selected_candidate].art, 118))
 	var score_stack := VBoxContainer.new()
 	score_stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	score_stack.add_theme_constant_override("separation", 0)

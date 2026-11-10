@@ -87,6 +87,15 @@ static func portrait(path: String, side: int = 96) -> TextureRect:
 	node.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return node
 
+static func framed_portrait(path: String, side: int = 96) -> PanelContainer:
+	var frame := PanelContainer.new()
+	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var frame_style := style(PALE, INK, 1, false)
+	frame_style.set_content_margin_all(3)
+	frame.add_theme_stylebox_override("panel", frame_style)
+	frame.add_child(portrait(path, side))
+	return frame
+
 class Hero extends Control:
 	var clock: float = 0.0
 	var congress: Texture2D

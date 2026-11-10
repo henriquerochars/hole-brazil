@@ -7,11 +7,8 @@ godot_bin="${GODOT_BIN:-godot}"
 capture_dir="$(mktemp -d)"
 trap 'rm -rf "$capture_dir"' EXIT
 mkdir -p docs/media
-launcher=()
-if [[ -z "${DISPLAY:-}" ]]; then
-  launcher=(xvfb-run -a)
-fi
-"${launcher[@]}" "$godot_bin" --path . --rendering-method gl_compatibility \
+launcher=(xvfb-run -a -s "-screen 0 1280x1280x24")
+XDG_DATA_HOME="$capture_dir/user-data" "${launcher[@]}" "$godot_bin" --path . --rendering-method gl_compatibility \
   --audio-driver Dummy --fixed-fps 30 --script res://scripts/capture.gd \
   -- "--output=$capture_dir"
 cp "$capture_dir"/{menu,selection,gameplay,pause,results}.png "$capture_dir/capture.json" docs/media/

@@ -6,19 +6,19 @@
 	"stats": {
 		"absorbed": 192,
 		"active": false,
-		"best_combo": 192,
+		"best_combo": 190,
 		"candidate": 0,
 		"combo": 0,
 		"combo_remaining": 0.0,
-		"last_absorbed": "Gabinete",
+		"last_absorbed": "Árvore",
 		"level": 6,
 		"level_name": "Engole Brasília",
 		"multiplier": 1.0,
 		"paused": true,
 		"progress": 1.0,
 		"radius": 156.0,
-		"score": 22362,
-		"seed": 1794271361,
+		"score": 21969,
+		"seed": 12345,
 		"time_left": 0.0,
 		"total": 192
 	}
