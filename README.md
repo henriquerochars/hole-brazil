@@ -27,7 +27,7 @@ cd hole-brazil
 godot --path .
 ```
 
-Repository visibility is controlled by its owner; release downloads require access while the repository is private.
+This project is public and open source. Source code is available under the MIT license; bundled fonts retain their SIL OFL licenses. Anyone can clone the repository and download the release builds.
 
 ## A eleição mais absorvente do país
 
